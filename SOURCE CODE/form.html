@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centered Form</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.3.2/mdb.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #0a75ad;
+            color: darkblue;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            width: 100%;
+            max-width: 500px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card mt-3">
+        <div class="card-header bg-danger text-white"><h5>AJAX REGISTRATION</h5></div>
+        <div id="message"></div>
+        <div class="card-body">
+            <form class="form-check">
+                <div class="form-group">
+                    <label class="form-label">Firstname</label>
+                    <input type="text" id="firstname" class="form-control">
+                    <p id="errorFname"></p>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Lastname</label>
+                    <input type="text" id="lastname" class="form-control">
+                    <p id="errorLname"></p>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="text" id="email" class="form-control">
+                    <p id="errorEmail"></p>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control">
+                    <p id="errorpassword"></p>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Confirm Password</label>
+                    <input type="password" id="cpassword" class="form-control">
+                    <p id="errorcPassword"></p>
+                </div>
+                <input type="button" id="button" value="Send data to db" class="btn btn-danger w-100">
+            </form>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $("#button").click(function () {
+                let firstname = $("#firstname").val();
+                let lastname = $("#lastname").val();
+                let email = $("#email").val();
+                let password = $("#password").val();
+                let cpassword = $("#cpassword").val();
+
+                if (firstname === "") {
+                    $("#errorFname").text("Firstname is required");
+                } else if (lastname === "") {
+                    $("#errorLname").text("Lastname is required");
+                } else {
+                    dataProcess();
+                }
+
+                function dataProcess() {
+                    $.ajax({
+                        url: 'API.php',
+                        method: 'POST',
+                        data: {
+                            fname: firstname,
+                            lname: lastname,
+                            emailAddress: email,
+                            passwrd: password
+                        },
+                        success: function (response) {
+                            if (response === "0") {
+                                $("#message").text("Duplicate found, the user already exists");
+                            } else if (response === "1") {
+                                $("#message").text("You have successfully added a new user");
+                            } else if (response === "failed") {
+                                $("#message").text("Query failed");
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
